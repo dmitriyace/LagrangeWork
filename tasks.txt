@@ -1,0 +1,4 @@
+1. write a simple realisation                                           +
+2. write a class with method accepting array, function, etc. parameters +
+3. write a user interface with drawing graphic                          +
+4. write a user interface number input
