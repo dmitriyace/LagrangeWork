@@ -28,10 +28,7 @@ public class BuildChart extends ApplicationFrame {
 
     public BuildChart(final String title, DataX xValues, DataY yValues, double[] xInterpolated, double[] yInterpolated) {
         super(title);
-
-
         final XYDataset data = createDataset(xValues, yValues, xInterpolated, yInterpolated);
-
         final JFreeChart chart = ChartFactory.createXYLineChart(
                 "",
                 "X",
@@ -42,7 +39,6 @@ public class BuildChart extends ApplicationFrame {
                 true,
                 false
         );
-
 
 
         final XYPlot plot = chart.getXYPlot();
@@ -78,7 +74,7 @@ public class BuildChart extends ApplicationFrame {
                 try {
                     newXElement = in.nextDouble();
                     fault = false;
-                } catch (Exception e){
+                } catch (Exception e) {
                     fault = true;
                 }
             } while (fault);
@@ -163,7 +159,7 @@ public class BuildChart extends ApplicationFrame {
         System.out.println("Generating dataset. X set: ");
         for (int i = 0; i < size; i++) {
             x[i] = i + 1;
-            System.out.printf(x[i]+", ");
+            System.out.printf(x[i] + ", ");
         }
         System.out.println();
         return x;
