@@ -14,6 +14,7 @@ import org.jfree.ui.RefineryUtilities;
 
 import java.awt.geom.Ellipse2D;
 import java.util.Arrays;
+import java.util.Random;
 import java.util.Scanner;
 
 
@@ -99,7 +100,7 @@ public class BuildChart extends ApplicationFrame {
         double[] x = xV.getX();
         double[] y = yV.getY();
         int size = x.length;
-        final XYSeries series = new XYSeries("Function");
+        final XYSeries series = new XYSeries("x^(1/2) + 2*sin(x)");
         for (int i = 0; i < size; i++) {
             series.add(x[i], y[i]);
         }
@@ -128,7 +129,7 @@ public class BuildChart extends ApplicationFrame {
     private static void init() {
         function = new Function();
         calculator = new Calculator();
-        xValues = new DataX(generateX(chooseDataSet()));
+        xValues = new DataX(generateX((int) chooseDataSet()));
 
         double[] yCounted = calculator.calcYValues(DataX.getX());
         yValues = new DataY(yCounted);
@@ -155,26 +156,27 @@ public class BuildChart extends ApplicationFrame {
     }
 
     private static double[] generateX(int size) {
-        double[] x = new double[size];
+        double[] x = new double[size * 10];
+        Random random = new Random();
         System.out.println("Generating dataset. X set: ");
-        for (int i = 0; i < size; i++) {
-            x[i] = i + 1;
+        for (int i = 0; i < size * 10; i++) {
+            x[i] = i / 10 + random.nextDouble();
             System.out.printf(x[i] + ", ");
         }
         System.out.println();
         return x;
     }
 
-    private static int chooseDataSet() {
-        int size;
+    private static double chooseDataSet() {
+        double size;
         in = new Scanner(System.in);
         do {
-            System.out.println("Type your dataset size");
-            while (!in.hasNextInt()) {
+            System.out.println("Type your dataset size \n(you will type decades. recomended decade is less or equals 6)");
+            while (!in.hasNextDouble()) {
                 System.out.println("You have to type in integer value");
                 in.next();
             }
-            size = in.nextInt();
+            size = in.nextDouble();
         } while (Double.isNaN(size));
         return size;
     }
