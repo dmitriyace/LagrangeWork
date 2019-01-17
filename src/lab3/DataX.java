@@ -1,3 +1,5 @@
+package lab3;
+
 public class DataX {
     private static double[] x;
 

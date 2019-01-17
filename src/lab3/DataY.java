@@ -1,3 +1,5 @@
+package lab3;
+
 public class DataY {
     private static double y[];
 

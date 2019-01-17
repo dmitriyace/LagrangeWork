@@ -1,5 +1,7 @@
+package lab3;
+
 public class LagrangeMethod {
-    double interpolateLagrange(double x, double[] xValues, double[] yValues, int size) {
+    public double interpolateLagrange(double x, double[] xValues, double[] yValues, int size) {
         double lagrangePol = 0;
         for (int i = 0; i < size; i++) {
             double basicsPol = 1;

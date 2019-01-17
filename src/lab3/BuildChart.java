@@ -1,3 +1,5 @@
+package lab3;
+
 import javafx.beans.property.SimpleDoubleProperty;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -28,6 +30,35 @@ public class BuildChart extends ApplicationFrame {
     static Scanner in;
 
     public BuildChart(final String title, DataX xValues, DataY yValues, double[] xInterpolated, double[] yInterpolated) {
+        super(title);
+        final XYDataset data = createDataset(xValues, yValues, xInterpolated, yInterpolated);
+        final JFreeChart chart = ChartFactory.createXYLineChart(
+                "",
+                "X",
+                "Y",
+                data,
+                PlotOrientation.VERTICAL,
+                true,
+                true,
+                false
+        );
+
+
+        final XYPlot plot = chart.getXYPlot();
+        XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
+        plot.setRenderer(renderer);
+        renderer.setSeriesShape(1, new Ellipse2D.Double(0, 0, 0, 0));
+        renderer.setSeriesShape(0, new Ellipse2D.Double(0, 0, 6, 6));
+
+        final NumberAxis axis = (NumberAxis) plot.getRangeAxis();
+        axis.setAutoRangeIncludesZero(false);
+        axis.setAutoRangeMinimumSize(1.0);
+        ChartPanel chartPanel = new ChartPanel(chart);
+        chartPanel.setPreferredSize(new java.awt.Dimension(500, 500));
+        setContentPane(chartPanel);
+
+    }
+    public BuildChart(final String title, double[] xValues, double[] yValues, double[] xInterpolated, double[] yInterpolated) {
         super(title);
         final XYDataset data = createDataset(xValues, yValues, xInterpolated, yInterpolated);
         final JFreeChart chart = ChartFactory.createXYLineChart(
@@ -113,6 +144,27 @@ public class BuildChart extends ApplicationFrame {
         dataset.addSeries(seriesInterpolated);
         return dataset;
     }
+
+    private XYDataset createDataset(double[] xV, double[] yV, double[] xInt, double[] yInt) {
+        XYSeriesCollection dataset = new XYSeriesCollection();
+        double[] x = xV;
+        double[] y = yV;
+        int size = x.length;
+        final XYSeries series = new XYSeries("Function");
+        for (int i = 0; i < size; i++) {
+            series.add(x[i], y[i]);
+        }
+        final XYSeries seriesInterpolated = new XYSeries("Interpolated Data");
+        for (int i = 0; i < xInt.length; i++) {
+            seriesInterpolated.add(xInt[i], yInt[i]);
+        }
+
+        dataset.addSeries(series);
+        dataset.addSeries(seriesInterpolated);
+        return dataset;
+    }
+
+
 
 
     private static class Calculator {
