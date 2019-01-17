@@ -28,10 +28,11 @@ public class BuildChart extends ApplicationFrame {
     static double[] xInterpolated, yInterpolated, xValuesFromData, yValuesFromData;
     static Calculator calculator;
     static Scanner in;
+    static String functionTitle = "x^(1/2) + 2*sin(x)";
 
-    public BuildChart(final String title, DataX xValues, DataY yValues, double[] xInterpolated, double[] yInterpolated) {
+    public BuildChart(final String title, DataX xValues, DataY yValues, double[] xInterpolated, double[] yInterpolated, String fTitle) {
         super(title);
-        final XYDataset data = createDataset(xValues, yValues, xInterpolated, yInterpolated);
+        final XYDataset data = createDataset(xValues, yValues, xInterpolated, yInterpolated, fTitle);
         final JFreeChart chart = ChartFactory.createXYLineChart(
                 "",
                 "X",
@@ -58,9 +59,9 @@ public class BuildChart extends ApplicationFrame {
         setContentPane(chartPanel);
 
     }
-    public BuildChart(final String title, double[] xValues, double[] yValues, double[] xInterpolated, double[] yInterpolated) {
+    public BuildChart(final String title, double[] xValues, double[] yValues, double[] xInterpolated, double[] yInterpolated, String fTitle) {
         super(title);
-        final XYDataset data = createDataset(xValues, yValues, xInterpolated, yInterpolated);
+        final XYDataset data = createDataset(xValues, yValues, xInterpolated, yInterpolated, fTitle);
         final JFreeChart chart = ChartFactory.createXYLineChart(
                 "",
                 "X",
@@ -120,18 +121,18 @@ public class BuildChart extends ApplicationFrame {
     }
 
     private static void buildChart() {
-        final BuildChart demo = new BuildChart("Lagrange", xValues, yValues, xInterpolated, yInterpolated);
+        final BuildChart demo = new BuildChart("Lagrange", xValues, yValues, xInterpolated, yInterpolated, functionTitle);
         demo.pack();
         RefineryUtilities.centerFrameOnScreen(demo);
         demo.setVisible(true);
     }
 
-    private XYDataset createDataset(DataX xV, DataY yV, double[] xInt, double[] yInt) {
+    private XYDataset createDataset(DataX xV, DataY yV, double[] xInt, double[] yInt, String title) {
         XYSeriesCollection dataset = new XYSeriesCollection();
         double[] x = xV.getX();
         double[] y = yV.getY();
         int size = x.length;
-        final XYSeries series = new XYSeries("x^(1/2) + 2*sin(x)");
+        final XYSeries series = new XYSeries(title);
         for (int i = 0; i < size; i++) {
             series.add(x[i], y[i]);
         }
@@ -145,12 +146,12 @@ public class BuildChart extends ApplicationFrame {
         return dataset;
     }
 
-    private XYDataset createDataset(double[] xV, double[] yV, double[] xInt, double[] yInt) {
+    private XYDataset createDataset(double[] xV, double[] yV, double[] xInt, double[] yInt, String fTitle) {
         XYSeriesCollection dataset = new XYSeriesCollection();
         double[] x = xV;
         double[] y = yV;
         int size = x.length;
-        final XYSeries series = new XYSeries("Function");
+        final XYSeries series = new XYSeries(fTitle);
         for (int i = 0; i < size; i++) {
             series.add(x[i], y[i]);
         }

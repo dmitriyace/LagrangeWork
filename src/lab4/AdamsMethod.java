@@ -8,17 +8,17 @@ import java.util.*;
 
 public class AdamsMethod {
 
-    static Map<Double, Double> map;
-    static boolean firstCycle = true;
-    static int n, c;
-    static double x0, y0, h, e, xn;
+    private static Map<Double, Double> map;
+    private static boolean firstCycle = true;
+    private static int n, c;
+    private static double x0, y0, h, e, xn;
     private static final int MAX_ITERATIONS = 100000;
-    static List<Double>
-            x = new ArrayList<Double>(),
-            y = new ArrayList<Double>(),
-            dy = new ArrayList<Double>(),
-            yCorr = new ArrayList<Double>(),
-            yp = new ArrayList<Double>();
+    private static List<Double>
+            x = new ArrayList<>(),
+            y = new ArrayList<>(),
+            dy = new ArrayList<>(),
+            yCorr = new ArrayList<>(),
+            yp = new ArrayList<>();
 
     private static void cycle() {
         if (firstCycle) {
@@ -38,16 +38,16 @@ public class AdamsMethod {
         yp.clear();
 
         y.add(y0);
-        euler(1, 4);
+        getStartingValuesByEuler(1, 4);
 
         for (int i = 0; i < 4; i++) {
             yp.add(calcFunction(x0 + i * h, y.get(i)));
         }
 
         for (int i = 4; i < n; i++) {
-            y.add(y.get(i - 1) + adams(i - 1));
+            y.add(y.get(i - 1) + adamsPredictor(i - 1));
             yp.add(calcFunction(x0 + i * h, y.get(i)));
-            double yCorr = y.get(i - 1) + adamsCorr(i);
+            double yCorr = y.get(i - 1) + adamsCorrector(i);
             if (Math.abs(y.get(y.size() - 1) - yCorr) > e && c < MAX_ITERATIONS) {
                 cycle();
             }
@@ -59,23 +59,23 @@ public class AdamsMethod {
 
     }
 
-    private static double adamsCorr(int i) {
+    private static double adamsCorrector(int i) {
         return h / 24 * (9 * yp.get(i) + 19 * yp.get(i - 1) - 5 * yp.get(i - 2) + yp.get(i - 3));
     }
 
-    private static double adams(int i) {
+    private static double adamsPredictor(int i) {
         return h / 24 * (55 * yp.get(i) - 59 * yp.get(i - 1) + 37 * yp.get(i - 2) - 9 * yp.get(i - 3));
     }
 
 
-    private static void euler(int a, int b) {
+    private static void getStartingValuesByEuler(int a, int b) {
         for (int i = a; i <= b; i++) {
             y.add(y.get(i - 1) + h * calcFunction(x0 + (i - 1) * h, y.get(i - 1)));
         }
     }
 
     private static double calcFunction(double x, double y) {
-        return 0.5 * Math.sin(x)  + 2 - y*y;
+        return 0.5 * Math.sin(x) + 2 - y * y;
     }
 
     private static Map<Double, Double> adamsMethod() {
@@ -92,8 +92,8 @@ public class AdamsMethod {
         System.out.println(adamsMethod().size());
         double[] xValues = new double[map.size()];
         double[] yValues = new double[map.size()];
-        List<Double> x = new ArrayList<Double>(map.values());
-        List<Double> y = new ArrayList<Double>(map.keySet());
+        List<Double> x = new ArrayList<>(map.values());
+        List<Double> y = new ArrayList<>(map.keySet());
 
         for (int i = 0; i < map.size(); i++) {
             xValues[i] = x.get(i);
@@ -118,17 +118,13 @@ public class AdamsMethod {
         for (int i = 0; i < iterationsAmount; i++) {
             xInterpolated[i] = xValuesMin + ((double) (i) / 10);
         }
-
         for (int i = 0; i < iterationsAmount; i++) {
             yInterpolated[i] = lagrangeMethod.interpolateLagrange(xInterpolated[i], xValuesFromData, yValuesFromData, xValuesFromData.length);
         }
-
-        final BuildChart demo = new BuildChart("Adams method", xValues, yValues, xInterpolated, yInterpolated);
+        final BuildChart demo = new BuildChart("Adams method", xValues, yValues, xInterpolated, yInterpolated, "0.5 * Math.sin(x) + 2 - y * y");
         demo.pack();
         RefineryUtilities.centerFrameOnScreen(demo);
         demo.setVisible(true);
-//        new BuildChart(xValues, yValues, )
-
     }
 
     private static void getStartValues() {
@@ -143,8 +139,6 @@ public class AdamsMethod {
 
         } catch (Exception e) {
             getStartValues();
-
         }
     }
 }
-
