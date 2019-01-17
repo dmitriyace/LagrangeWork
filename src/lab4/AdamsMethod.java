@@ -76,6 +76,7 @@ public class AdamsMethod {
 
     private static double calcFunction(double x, double y) {
         return 0.5 * Math.sin(x) + 2 - y * y;
+//        return  1/2*x-y;
     }
 
     private static Map<Double, Double> adamsMethod() {

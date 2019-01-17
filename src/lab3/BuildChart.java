@@ -59,6 +59,7 @@ public class BuildChart extends ApplicationFrame {
         setContentPane(chartPanel);
 
     }
+
     public BuildChart(final String title, double[] xValues, double[] yValues, double[] xInterpolated, double[] yInterpolated, String fTitle) {
         super(title);
         final XYDataset data = createDataset(xValues, yValues, xInterpolated, yInterpolated, fTitle);
@@ -155,17 +156,17 @@ public class BuildChart extends ApplicationFrame {
         for (int i = 0; i < size; i++) {
             series.add(x[i], y[i]);
         }
+
         final XYSeries seriesInterpolated = new XYSeries("Interpolated Data");
         for (int i = 0; i < xInt.length; i++) {
             seriesInterpolated.add(xInt[i], yInt[i]);
         }
 
+
         dataset.addSeries(series);
         dataset.addSeries(seriesInterpolated);
         return dataset;
     }
-
-
 
 
     private static class Calculator {
