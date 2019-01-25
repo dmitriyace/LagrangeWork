@@ -81,14 +81,13 @@ public class AdamsMethod {
         }
     }
 
-    private static Map<Double, Double> adamsMethod() {
+    private static void adamsMethod() {
         firstCycle = true;
         cycle();
         map = new HashMap<>();
         for (int i = 0; i < n; i++) {
             map.put(x0 + i * h, y.get(i));
         }
-        return map;
     }
 
     private static void cycle() {
@@ -154,10 +153,8 @@ public class AdamsMethod {
         }
     }
 
-
-
     private static boolean createNewChart() {
-        String answer = "";
+        String answer;
         System.out.println("Whould you like to make a new chart?(type \"y\" to create new chart)\nor would you like to stop the program(type \"q\" to stop)");
         scanner.reset();
         answer = scanner.nextLine();
