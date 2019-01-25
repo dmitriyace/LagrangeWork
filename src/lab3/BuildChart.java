@@ -1,6 +1,5 @@
 package lab3;
 
-import javafx.beans.property.SimpleDoubleProperty;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -74,12 +73,11 @@ public class BuildChart extends ApplicationFrame {
                 false
         );
 
-
         final XYPlot plot = chart.getXYPlot();
         XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
         plot.setRenderer(renderer);
         renderer.setSeriesShape(1, new Ellipse2D.Double(0, 0, 0, 0));
-        renderer.setSeriesShape(0, new Ellipse2D.Double(0, 0, 6, 6));
+        renderer.setSeriesShape(0, new Ellipse2D.Double(-1, -1, 2, 2));
 
         final NumberAxis axis = (NumberAxis) plot.getRangeAxis();
         axis.setAutoRangeIncludesZero(false);

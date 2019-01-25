@@ -1,24 +1,95 @@
 package lab4;
 
 import lab3.BuildChart;
-import lab3.LagrangeMethod;
 import org.jfree.ui.RefineryUtilities;
-
 import java.util.*;
 
 public class AdamsMethod {
 
     private static Map<Double, Double> map;
-    private static boolean firstCycle = true;
+    private static boolean firstCycle;
     private static int n, c;
     private static double x0, y0, h, e, xn;
-    private static final int MAX_ITERATIONS = 100000;
+    private static final int MAX_ITERATIONS = 100;
+    private static Scanner scanner;
     private static List<Double>
             x = new ArrayList<>(),
             y = new ArrayList<>(),
             dy = new ArrayList<>(),
             yCorr = new ArrayList<>(),
             yp = new ArrayList<>();
+    private static int chosenFunction;
+
+    public static void main(String[] args) {
+        do
+            init();
+        while (createNewChart());
+    }
+
+    private static void init() {
+        getStartingValues();
+        adamsMethod();
+        double[] xValues = new double[map.size()];
+        double[] yValues = new double[map.size()];
+        List<Double> x = new ArrayList<>(map.keySet());
+        List<Double> y = new ArrayList<>(map.values());
+        for (int i = 0; i < map.size(); i++) {
+            xValues[i] = x.get(i);
+            yValues[i] = y.get(i);
+        }
+        final BuildChart demo = new BuildChart("Adams method", xValues, yValues, new double[]{}, new double[]{}, "");
+        demo.pack();
+        RefineryUtilities.centerFrameOnScreen(demo);
+        demo.setVisible(true);
+    }
+
+    private static void getStartingValues() {
+        try {
+            scanner = new Scanner(System.in);
+            getFunction();
+            if (chosenFunction == 1 || chosenFunction == 2) {
+                getParams();
+            } else {
+                getStartingValues();
+            }
+        } catch (Exception e) {
+            System.out.println("Please, type in correct data");
+            getStartingValues();
+        }
+
+    }
+
+    private static void getFunction() {
+        System.out.println("choose function which will be calculated\n(type 1 or 2)\n1) 2 * (x * x + y)\n2) 0.5 * Math.sin(x) + 2 - y * y");
+        try {
+            chosenFunction = Integer.parseInt(scanner.nextLine());
+        } catch (Exception ex) {
+            getFunction();
+        }
+    }
+
+    private static void getParams() {
+        System.out.println("Type in four parameters:\nx0, y0, last x and accuracy \nusing space as delimiter");
+        String[] answer = scanner.nextLine().replace(",", ".").split(" ");
+        if (answer.length == 4) {
+            x0 = Double.parseDouble(answer[0]);
+            y0 = Double.parseDouble(answer[1]);
+            xn = Double.parseDouble(answer[2]);
+            e = Double.parseDouble(answer[3]);
+        } else {
+            getParams();
+        }
+    }
+
+    private static Map<Double, Double> adamsMethod() {
+        firstCycle = true;
+        cycle();
+        map = new HashMap<>();
+        for (int i = 0; i < n; i++) {
+            map.put(x0 + i * h, y.get(i));
+        }
+        return map;
+    }
 
     private static void cycle() {
         if (firstCycle) {
@@ -38,7 +109,7 @@ public class AdamsMethod {
         yp.clear();
 
         y.add(y0);
-        getStartingValuesByEuler(1, 4);
+        getStartingValuesByEuler();
 
         for (int i = 0; i < 4; i++) {
             yp.add(calcFunction(x0 + i * h, y.get(i)));
@@ -53,10 +124,7 @@ public class AdamsMethod {
             }
             y.set(i, yCorr);
             yp.set(i, calcFunction(x0 + i * h, yCorr));
-
         }
-
-
     }
 
     private static double adamsCorrector(int i) {
@@ -68,78 +136,40 @@ public class AdamsMethod {
     }
 
 
-    private static void getStartingValuesByEuler(int a, int b) {
-        for (int i = a; i <= b; i++) {
+    private static void getStartingValuesByEuler() {
+        for (int i = 1; i <= 4; i++) {
             y.add(y.get(i - 1) + h * calcFunction(x0 + (i - 1) * h, y.get(i - 1)));
         }
     }
 
     private static double calcFunction(double x, double y) {
-        return 0.5 * Math.sin(x) + 2 - y * y;
-//        return  1/2*x-y;
-    }
-
-    private static Map<Double, Double> adamsMethod() {
-        cycle();
-        map = new HashMap<>();
-        for (int i = 0; i < n; i++) {
-            map.put(x0 + i * h, y.get(i));
-        }
-        return map;
-    }
-
-    public static void main(String[] args) {
-        getStartValues();
-        System.out.println(adamsMethod().size());
-        double[] xValues = new double[map.size()];
-        double[] yValues = new double[map.size()];
-        List<Double> x = new ArrayList<>(map.values());
-        List<Double> y = new ArrayList<>(map.keySet());
-
-        for (int i = 0; i < map.size(); i++) {
-            xValues[i] = x.get(i);
-        }
-        for (int i = 0; i < map.size(); i++) {
-            yValues[i] = y.get(i);
-        }
-
-        LagrangeMethod lagrangeMethod = new LagrangeMethod();
-
-        double[] xValuesFromData = xValues;
-        double[] yValuesFromData = yValues;
-
-        double xValuesMin;
-
-        xValuesMin = Arrays.stream(xValuesFromData).min().getAsDouble();
-        double xValueMax = Arrays.stream(xValuesFromData).max().getAsDouble();
-        int iterationsAmount = (int) (xValueMax - xValuesMin) * 10 + 1;
-        double[] xInterpolated = new double[iterationsAmount];
-        double[] yInterpolated = new double[iterationsAmount];
-
-        for (int i = 0; i < iterationsAmount; i++) {
-            xInterpolated[i] = xValuesMin + ((double) (i) / 10);
-        }
-        for (int i = 0; i < iterationsAmount; i++) {
-            yInterpolated[i] = lagrangeMethod.interpolateLagrange(xInterpolated[i], xValuesFromData, yValuesFromData, xValuesFromData.length);
-        }
-        final BuildChart demo = new BuildChart("Adams method", xValues, yValues, xInterpolated, yInterpolated, "0.5 * Math.sin(x) + 2 - y * y");
-        demo.pack();
-        RefineryUtilities.centerFrameOnScreen(demo);
-        demo.setVisible(true);
-    }
-
-    private static void getStartValues() {
-        try {
-            Scanner scanner = new Scanner(System.in);
-            System.out.println("Type in x0, y0, last x and accuracy using space as delimiter");
-            String[] answer = scanner.nextLine().replace(",", ".").split(" ");
-            x0 = Double.parseDouble(answer[0]);
-            y0 = Double.parseDouble(answer[1]);
-            xn = Double.parseDouble(answer[2]);
-            e = Double.parseDouble(answer[3]);
-
-        } catch (Exception e) {
-            getStartValues();
+        switch (chosenFunction) {
+            case 1:
+                return 2 * (x * x + y);
+            case 2:
+                return 0.5 * Math.sin(x) + 2 - y * y;
+            default:
+                getStartingValues();
+                return 0;
         }
     }
+
+
+
+    private static boolean createNewChart() {
+        String answer = "";
+        System.out.println("Whould you like to make a new chart?(type \"y\" to create new chart)\nor would you like to stop the program(type \"q\" to stop)");
+        scanner.reset();
+        answer = scanner.nextLine();
+        if (answer.equals("y")) {
+            return true;
+        } else if (answer.equals("q")) {
+            System.exit(0);
+        } else {
+            System.out.println("You should type y or n!");
+            createNewChart();
+        }
+        return false;
+    }
+
 }
