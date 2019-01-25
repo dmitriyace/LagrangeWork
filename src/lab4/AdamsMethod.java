@@ -2,6 +2,7 @@ package lab4;
 
 import lab3.BuildChart;
 import org.jfree.ui.RefineryUtilities;
+
 import java.util.*;
 
 public class AdamsMethod {
@@ -10,7 +11,7 @@ public class AdamsMethod {
     private static boolean firstCycle;
     private static int n, c;
     private static double x0, y0, h, e, xn;
-    private static final int MAX_ITERATIONS = 100;
+    private static final int MAX_ITERATIONS = 10;
     private static Scanner scanner;
     private static List<Double>
             x = new ArrayList<>(),
@@ -19,11 +20,14 @@ public class AdamsMethod {
             yCorr = new ArrayList<>(),
             yp = new ArrayList<>();
     private static int chosenFunction;
+    private static boolean runFurhter;
 
     public static void main(String[] args) {
-        do
+        do {
             init();
-        while (createNewChart());
+            createNewChart();
+        }
+        while (runFurhter);
     }
 
     private static void init() {
@@ -37,10 +41,20 @@ public class AdamsMethod {
             xValues[i] = x.get(i);
             yValues[i] = y.get(i);
         }
-        final BuildChart demo = new BuildChart("Adams method", xValues, yValues, new double[]{}, new double[]{}, "");
+        final BuildChart demo = new BuildChart("Adams method", xValues, yValues, new double[]{}, new double[]{}, getTitleOnChosenFunction());
         demo.pack();
         RefineryUtilities.centerFrameOnScreen(demo);
         demo.setVisible(true);
+    }
+
+    private static String getTitleOnChosenFunction() {
+        switch (chosenFunction) {
+            case 1:
+                return "2 * (x^2 + y)";
+            case 2:
+                return "0.5 * sin(x) + 2 - y^2";
+        }
+        return "";
     }
 
     private static void getStartingValues() {
@@ -60,9 +74,9 @@ public class AdamsMethod {
     }
 
     private static void getFunction() {
-        System.out.println("choose function which will be calculated\n(type 1 or 2)\n1) 2 * (x * x + y)\n2) 0.5 * Math.sin(x) + 2 - y * y");
+        System.out.println("choose function which will be calculated\n(type 1 or 2)\n1) 2 * (x^2 + y)\n2) 0.5 * sin(x) + 2 - y^2");
         try {
-            chosenFunction = Integer.parseInt(scanner.nextLine());
+            chosenFunction = Integer.parseInt(scanner.nextLine().trim());
         } catch (Exception ex) {
             getFunction();
         }
@@ -153,20 +167,17 @@ public class AdamsMethod {
         }
     }
 
-    private static boolean createNewChart() {
+    private static void createNewChart() {
         String answer;
         System.out.println("Whould you like to make a new chart?(type \"y\" to create new chart)\nor would you like to stop the program(type \"q\" to stop)");
-        scanner.reset();
         answer = scanner.nextLine();
         if (answer.equals("y")) {
-            return true;
+            runFurhter = true;
         } else if (answer.equals("q")) {
-            System.exit(0);
+            runFurhter = false;
         } else {
             System.out.println("You should type y or n!");
             createNewChart();
         }
-        return false;
     }
-
 }
